@@ -1,0 +1,11 @@
+<svg width="1200" height="800" viewBox="0 0 1200 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg4" x1="0" y1="0" x2="1200" y2="800" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FDA4AF"/>
+      <stop offset="1" stop-color="#A5B4FC"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" rx="48" fill="url(#bg4)"/>
+  <path d="M600 520C860 380 980 270 980 170C980 90 925 40 858 40C772 40 700 98 600 206C500 98 428 40 342 40C275 40 220 90 220 170C220 270 340 380 600 520Z" fill="white" fill-opacity="0.35"/>
+  <text x="72" y="700" fill="white" fill-opacity="0.95" font-size="62" font-family="Arial, sans-serif">Nasza rocznica 💖</text>
+</svg>

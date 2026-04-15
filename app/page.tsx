@@ -1,64 +1,117 @@
-import Image from "next/image";
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import { fetchTimelineEvents, fetchGoals, toSortableDate, type TimelineEvent, type Goal } from "@/lib/timeline";
+import { HomeTabs, type HomeTab } from "@/components/home/home-tabs";
+import { RelationshipCounter, parseStartDate } from "@/components/home/relationship-counter";
+import { TimelineSection } from "@/components/home/timeline-section";
+import { GoalsSection } from "@/components/goals/goals-section";
 
 export default function Home() {
+  const [timelineEvents, setTimelineEvents] = useState<TimelineEvent[]>([]);
+  const [goals, setGoals] = useState<Goal[]>([]);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [activeTab, setActiveTab] = useState<HomeTab>("timeline");
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadData = async () => {
+      try {
+        const [events, goalsData] = await Promise.all([
+          fetchTimelineEvents(),
+          fetchGoals(),
+        ]);
+
+        if (isMounted) {
+          setTimelineEvents(events);
+          setGoals(goalsData);
+          setIsLoaded(true);
+        }
+      } catch {
+        if (isMounted) {
+          setTimelineEvents([]);
+          setGoals([]);
+          setIsLoaded(true);
+        }
+      }
+    };
+
+    void loadData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const sortedTimeline = useMemo(() => {
+    return [...timelineEvents].sort((a, b) => {
+      return toSortableDate(a.date) > toSortableDate(b.date) ? 1 : -1;
+    });
+  }, [timelineEvents]);
+
+  const relationshipStartDate = useMemo(() => {
+    const configuredStartDate = parseStartDate(
+      process.env.NEXT_PUBLIC_RELATIONSHIP_START_DATE,
+    );
+
+    if (configuredStartDate) {
+      return configuredStartDate;
+    }
+
+    if (sortedTimeline.length > 0) {
+      return parseStartDate(sortedTimeline[0].date);
+    }
+
+    return null;
+  }, [sortedTimeline]);
+
+  const handleGoalsRefresh = async () => {
+    try {
+      const goalsData = await fetchGoals();
+      setGoals(goalsData);
+    } catch {
+      // Handle error silently
+    }
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <div className="romance-background min-h-screen">
+      <main className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-6 py-10 md:px-10 md:py-14">
+        <section className="glass-panel p-8 md:p-12">
+          <p className="text-sm font-semibold tracking-[0.2em] text-rose-500/80 uppercase">
+            Nasza miłość
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+          <h1 className="mt-4 text-3xl font-semibold tracking-tight text-zinc-800 md:text-5xl">
+            Każda chwila z Tobą jest wspomnieniem
+          </h1>
+          <p className="mt-4 max-w-2xl text-base leading-relaxed text-zinc-600 md:text-lg">
+            Ta oś czasu to księga naszej historii — każdy moment, każdy uśmiech, każde spojrzenie, które warte jest bycia zapamiętanym. Dodawajmy tutaj nasze najprzyjemniejsze wspomnienia i tworzmy razem nieskończoną opowieść naszej miłości.
+          </p>
+        </section>
+
+        <HomeTabs activeTab={activeTab} onChange={setActiveTab} />
+
+        <section className="tab-panel-shell">
+          {activeTab === "timeline" ? (
+            <div key="timeline" className="tab-panel tab-panel-enter">
+              <TimelineSection events={sortedTimeline} isLoaded={isLoaded} />
+            </div>
+          ) : activeTab === "counter" ? (
+            <div key="counter" className="tab-panel tab-panel-enter">
+              <section className="glass-panel p-6 md:p-8">
+                <RelationshipCounter
+                  startDate={relationshipStartDate}
+                  fallbackDate={sortedTimeline[0]?.date ?? ""}
+                />
+              </section>
+            </div>
+          ) : (
+            <div key="goals" className="tab-panel tab-panel-enter">
+              <GoalsSection goals={goals} isLoaded={isLoaded} onRefresh={handleGoalsRefresh} />
+            </div>
+          )}
+        </section>
       </main>
     </div>
   );

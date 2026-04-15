@@ -1,0 +1,11 @@
+<svg width="1200" height="800" viewBox="0 0 1200 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg2" x1="0" y1="0" x2="1200" y2="800" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#93C5FD"/>
+      <stop offset="1" stop-color="#67E8F9"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" rx="48" fill="url(#bg2)"/>
+  <path d="M0 560C190 500 300 520 470 560C660 605 790 610 1200 470V800H0V560Z" fill="white" fill-opacity="0.32"/>
+  <text x="72" y="700" fill="white" fill-opacity="0.93" font-size="62" font-family="Arial, sans-serif">Pierwsza wspólna podróż 🌊</text>
+</svg>

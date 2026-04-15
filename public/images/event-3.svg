@@ -1,0 +1,12 @@
+<svg width="1200" height="800" viewBox="0 0 1200 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg3" x1="0" y1="0" x2="1200" y2="800" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FDE68A"/>
+      <stop offset="1" stop-color="#FDBA74"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" rx="48" fill="url(#bg3)"/>
+  <rect x="180" y="210" width="350" height="320" rx="34" fill="white" fill-opacity="0.23"/>
+  <rect x="590" y="180" width="430" height="380" rx="40" fill="white" fill-opacity="0.22"/>
+  <text x="72" y="700" fill="white" fill-opacity="0.95" font-size="62" font-family="Arial, sans-serif">Wspólne mieszkanie 🏡</text>
+</svg>
